@@ -18,7 +18,7 @@ export function Profile() {
         {name}
         <br />
         <a
-          href=""
+          href="/api/auth/logout"
           className="block text-red-400 transition-colors hover:text-red-300"
         >
           Logout
