@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import logo from '../assets/nlw-spacetime-logo.svg'
+import Link from 'next/link'
 
 export function Hero() {
   return (
@@ -11,12 +12,12 @@ export function Hero() {
         <p className=" text-lg leading-relaxed">
           Collect memories from your journey, and share them with the world!
         </p>
-        <a
-          href=""
+        <Link
+          href="/memories/new"
           className="inline-block rounded-full bg-green-500 px-5 py-3 font-alt text-sm uppercase leading-none text-black transition-colors hover:bg-green-600"
         >
           Create Memory
-        </a>
+        </Link>
       </div>
     </div>
   )
