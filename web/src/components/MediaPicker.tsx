@@ -22,7 +22,7 @@ export function MediaPicker() {
         type="file"
         name="media"
         id="media"
-        accept="image/*"
+        accept="image/*" //, video/*
         className="invisible h-0 w-0"
       />
 
@@ -35,5 +35,7 @@ export function MediaPicker() {
         />
       )}
     </>
+    // TODO - video preview
+    // <video src={preview} controls="false"/>
   )
 }
