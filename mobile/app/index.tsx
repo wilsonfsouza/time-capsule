@@ -33,7 +33,11 @@ export default function App() {
 
     const { token } = response.data
 
-    await SecureStore.setItemAsync('token', token)
+    try {
+      await SecureStore.setItemAsync('token', token)
+    } catch (error) {
+      console.error(error)
+    }
 
     router.push('/memories')
   }

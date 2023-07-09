@@ -10,13 +10,20 @@ import { useState } from 'react'
 import { Switch } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon from '@expo/vector-icons/Feather'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker'
+import * as SecureStore from 'expo-secure-store'
 
 import Logo from '../src/assets/logo.svg'
+import { api } from '../src/lib/api'
+
+type UploadedFile = {
+  fileUrl: string
+}
 
 export default function NewMemory() {
   const { bottom, top } = useSafeAreaInsets()
+  const router = useRouter()
 
   const [content, setContent] = useState('')
   const [preview, setPreview] = useState<string | null>(null)
@@ -37,7 +44,49 @@ export default function NewMemory() {
     }
   }
 
-  function handleCreateMemory() {}
+  async function handleCreateMemory() {
+    const token = await SecureStore.getItemAsync('token')
+
+    let coverUrl = ''
+
+    if (preview) {
+      const uploadFormData = new FormData()
+
+      uploadFormData.append('file', {
+        uri: preview,
+        name: 'image.jpg',
+        type: 'image/jpg',
+      } as any)
+
+      const uploadResponse = await api.post<UploadedFile>(
+        '/upload',
+        uploadFormData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      coverUrl = uploadResponse.data.fileUrl
+    }
+
+    await api.post(
+      '/memories',
+      {
+        content,
+        isPublic,
+        coverUrl,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+
+    router.push('/memories')
+  }
 
   return (
     <ScrollView
@@ -94,6 +143,7 @@ export default function NewMemory() {
           className="p-0 font-body text-lg text-gray-50"
           placeholderTextColor="#56565a"
           placeholder="Use this space to add pictures, videos, and a description of the experience you want to save for the future."
+          textAlignVertical="top"
         />
 
         <TouchableOpacity
